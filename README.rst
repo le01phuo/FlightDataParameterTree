@@ -21,7 +21,7 @@ Usage
 Download source code and run server.py from source.
 ::
 
-    python FlightDataParameterTree/server.py
+    python FlightDataParameterTree/flightdataparametertree/server.py
 
 Documentation
 -------------

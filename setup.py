@@ -11,7 +11,7 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
-import analysis_engine as pkg
+import flightdataparametertree as pkg
 from requirements import RequirementsParser
 requirements = RequirementsParser()
 #requirements.early_install()

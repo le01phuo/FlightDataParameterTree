@@ -168,7 +168,7 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
     '''
     '''
 
-    _template_pkg = ('spacetree', lookup_path('templates'))
+    _template_pkg = ('flightdataparametertree', lookup_path('templates'))
     _template_env = Environment(loader=PackageLoader(*_template_pkg))
 
     ####################################

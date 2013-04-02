@@ -7,7 +7,7 @@ Contents:
    :maxdepth: 2
 
    Introduction
-   Overview
+   FlightDataParameterTree
    Changes
    TODO
    Authors

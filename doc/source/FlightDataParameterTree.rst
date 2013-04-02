@@ -4,7 +4,7 @@ FlightDataParameterTree
 
 The `FlightDataParameterTree` is an web-based application which displays the dependency tree of an HDF file. It also displays a table containing parameter information for completing and correcting logical frame layouts.
 
-.. image:: flight_data_parameter_tree_interface.png
+.. image:: flight_data_parameter_tree.png
 
 -------------------
 Starting the server

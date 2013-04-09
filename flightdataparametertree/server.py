@@ -147,7 +147,9 @@ def lookup_path(relative_path):
     '''
     Convert a relative path to the asset path. Accounts for being frozen.
     '''
+    print relative_path
     file_path = relative_path.lstrip('/').replace('/', os.sep)
+    print file_path
     if getattr(sys, 'frozen', False):
         # The OLD pyInstaller way
         # http://www.pyinstaller.org/export/v1.5.1/project/doc/Manual.html?format=raw#accessing-data-files
@@ -157,7 +159,8 @@ def lookup_path(relative_path):
         #else:
         #    # --onedir distribution
         #    return os.path.join(os.path.dirname(sys.executable), file_path)
-        return file_path
+        print os.path.join(os.path.dirname('.'), file_path)
+        return os.path.join(os.path.dirname('.'), file_path)
     else:
         return file_path
 

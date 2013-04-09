@@ -160,6 +160,7 @@ def lookup_path(relative_path):
 
         # The NEW cx_Freeze way
         # http://cx_freeze.readthedocs.org/en/latest/overview.html#using-data-files
+        print >>sys.stderr, os.path.join(os.path.dirname(sys.argv[0]), file_path)
         return os.path.join(os.path.dirname(sys.argv[0]), file_path)
     else:
         return file_path

@@ -157,7 +157,10 @@ def lookup_path(relative_path):
         #else:
         #    # --onedir distribution
         #    return os.path.join(os.path.dirname(sys.executable), file_path)
-        return os.path.join(os.path.dirname(sys.executable), file_path)
+
+        # The NEW cx_Freeze way
+        # http://cx_freeze.readthedocs.org/en/latest/overview.html#using-data-files
+        return os.path.join(os.path.dirname(sys.argv[0]), file_path)
     else:
         return file_path
 

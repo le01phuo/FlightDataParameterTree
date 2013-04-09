@@ -89,11 +89,11 @@ FILE_EXT_TYPE_MAP = {
 
 APPDATA_DIR = '_assets/'
 if getattr(sys, 'frozen', False):
-    APPDATA_DIR = os.path.join(os.environ.get('APPDATA', '.'), 'FlightDataServices', 'FlightDataParameterTree')
+    APPDATA_DIR = os.path.join(os.environ.get('APPDATA', '.')) #, 'FlightDataServices', 'FlightDataParameterTree')
     if not os.path.isdir(APPDATA_DIR):
         print "Making Application data directory: %s" % APPDATA_DIR
         os.makedirs(APPDATA_DIR)
-        
+
 
 AJAX_DIR = os.path.join(APPDATA_DIR, 'ajax')
 if not os.path.isdir(AJAX_DIR):
@@ -149,13 +149,15 @@ def lookup_path(relative_path):
     '''
     file_path = relative_path.lstrip('/').replace('/', os.sep)
     if getattr(sys, 'frozen', False):
+        # The OLD pyInstaller way
         # http://www.pyinstaller.org/export/v1.5.1/project/doc/Manual.html?format=raw#accessing-data-files
-        if '_MEIPASS2' in os.environ:
-            # --onefile distribution
-            return os.path.join(os.environ['_MEIPASS2'], file_path)
-        else:
-            # --onedir distribution
-            return os.path.join(os.path.dirname(sys.executable), file_path)
+        #if '_MEIPASS2' in os.environ:
+        #    # --onefile distribution
+        #    return os.path.join(os.environ['_MEIPASS2'], file_path)
+        #else:
+        #    # --onedir distribution
+        #    return os.path.join(os.path.dirname(sys.executable), file_path)
+        return file_path
     else:
         return file_path
 

@@ -25,7 +25,7 @@ import webbrowser
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from cgi import FieldStorage
 from datetime import date, datetime
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, FileSystemLoader
 from tempfile import mkstemp
 from urlparse import urlparse
 
@@ -167,9 +167,10 @@ def lookup_path(relative_path):
 class SpacetreeRequestHandler(BaseHTTPRequestHandler):
     '''
     '''
-
-    _template_pkg = ('flightdataparametertree', lookup_path('templates'))
-    _template_env = Environment(loader=PackageLoader(*_template_pkg))
+    _server_path = os.path.dirname(os.path.realpath(
+        sys.executable if getattr(sys, 'frozen', False) else __file__))
+    _template_path = os.path.join(_server_path, 'templates')
+    _template_env = Environment(loader=FileSystemLoader(_template_path))
 
     ####################################
     # Response Helper Methods

@@ -19,6 +19,7 @@ AP Engaged
 AT Engaged
 Control Column
 Control Wheel
+Rudder
 Rudder Pedal
 Control Column Force
 Eng (1) Throttle Lever
@@ -109,3 +110,14 @@ TAWS Too Low Flap
 TAWS Too Low Gear
 TAWS Too Low Terrain
 TAWS Windshear Warning
+Key VHF (1)
+Key VHF (2)
+Key VHF (3)
+Eng (1) Thrust Limited By Thrust Reverser
+Eng (2) Thrust Limited By Thrust Reverser
+Eng (3) Thrust Limited By Thrust Reverser
+Eng (4) Thrust Limited By Thrust Reverser
+Pitch Command (Capt)
+Pitch Command (FO)
+Rudder Command (1)
+Rudder Command (2)

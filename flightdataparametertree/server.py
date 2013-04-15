@@ -52,7 +52,7 @@ from analysis_engine.dependency_graph import (
 from analysis_engine.node import NodeManager
 from analysis_engine.process_flight import get_derived_nodes
 
-from browser import register_additional_browsers
+from flightdatautilities.browser import register_additional_browsers
 
 
 ################################################################################

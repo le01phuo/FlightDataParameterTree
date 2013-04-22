@@ -175,7 +175,8 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
     '''
     _server_path = os.path.dirname(os.path.realpath(
         sys.executable if getattr(sys, 'frozen', False) else __file__))
-    _template_path = os.path.join(_server_path, 'templates')
+    _template_path = os.path.join(_server_path, 'templates',
+                                  'flightdataparametertree')
     _template_env = Environment(loader=FileSystemLoader(_template_path))
 
     ####################################

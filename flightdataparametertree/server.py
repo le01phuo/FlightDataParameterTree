@@ -344,13 +344,16 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
         achieved_flight_record = {}
 
         # Generate the dependency tree:
-        node_mgr = NodeManager(datetime.now(),
-                               1000,
-                               lfl_params,
-                               required_params,
-                               derived_nodes,
-                               ac_info,
-                               achieved_flight_record)
+        node_mgr = NodeManager(
+            datetime.now(),
+            1000,
+            lfl_params,
+            required_params,
+            [],
+            derived_nodes,
+            ac_info,
+            achieved_flight_record,
+        )
         _graph = graph_nodes(node_mgr)
         gr_all, gr_st, order = process_order(_graph, node_mgr)
 

@@ -34,7 +34,7 @@ from urlparse import urlparse
 # Logging Configuration
 
 
-logging.getLogger('analysis_engine').addHandler(logging.NullHandler())
+logging.getLogger('flightdataparametertree').addHandler(logging.NullHandler())
 
 
 ################################################################################

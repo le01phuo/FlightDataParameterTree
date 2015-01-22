@@ -24,7 +24,7 @@ import webbrowser
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from cgi import FieldStorage
-from datetime import date, datetime
+from datetime import date
 from jinja2 import Environment, FileSystemLoader
 from tempfile import mkstemp
 from urlparse import urlparse
@@ -89,7 +89,7 @@ FILE_EXT_TYPE_MAP = {
 
 APPDATA_DIR = '_assets/'
 if getattr(sys, 'frozen', False):
-    APPDATA_DIR = os.path.join(os.environ.get('APPDATA', '.')) #, 'FlightDataServices', 'FlightDataParameterTree')
+    APPDATA_DIR = os.path.join(os.environ.get('APPDATA', '.'))
     if not os.path.isdir(APPDATA_DIR):
         print "Making Application data directory: %s" % APPDATA_DIR
         os.makedirs(APPDATA_DIR)
@@ -128,13 +128,15 @@ def parse_arguments():
         description='Flight Data Parameter Tree Viewer',
     )
 
-    parser.add_argument('-n', '--no-browser',
+    parser.add_argument(
+        '-n', '--no-browser',
         action='store_false',
         dest='browser',
         help='Don\'t launch a browser when starting the server.',
     )
 
-    parser.add_argument('-p', '--port',
+    parser.add_argument(
+        '-p', '--port',
         default=DEFAULT_PORT,
         type=port_range,
         help='Port on which to run the server (default: %(default)d)',
@@ -317,7 +319,7 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
     def _generate_json(self, lfl_params):
         '''
         Returns list of parameters used in the spanning tree.
-        
+
         Note: LFL parameters not used will not be returned!
         '''
         print "Establishing Node dependencies from Analysis Engine"
@@ -361,13 +363,13 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
         tree = os.path.join(AJAX_DIR, 'tree.json')
         with open(tree, 'w') as fh:
             simplejson.dump(graph_adjacencies(gr_st), fh, indent=4)
-            
+
         # Save the list of nodes to node_list.json:
         node_list = os.path.join(AJAX_DIR, 'node_list.json')
         spanning_tree_params = sorted(gr_st.nodes())
         with open(node_list, 'w') as fh:
             simplejson.dump(spanning_tree_params, fh, indent=4)
-        return 
+        return
 
     ####################################
     # Fetch Parameters via REST API
@@ -375,7 +377,7 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
     def _fetch_params(self, lfl_params):
         '''
         Fetch params from server.
-        
+
         Q: Server returns all params, even if not in the DB.
         '''
         # Make a union of both LFL and spanning tree parameters to include them all

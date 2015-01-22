@@ -87,6 +87,9 @@ FILE_EXT_TYPE_MAP = {
     'png': 'image/png',
 }
 
+APP_PATH = sys.executable if getattr(sys, 'frozen', False) else __file__
+APP_DIR = os.path.dirname(APP_PATH)
+
 APPDATA_DIR = '_assets/'
 if getattr(sys, 'frozen', False):
     APPDATA_DIR = os.path.join(os.environ.get('APPDATA', '.'))
@@ -431,6 +434,7 @@ if __name__ == '__main__':
     else:
         print >>sys.stderr, 'Browse to the above location to use the viewer...'
 
+    os.chdir(APP_DIR)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

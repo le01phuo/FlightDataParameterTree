@@ -347,7 +347,7 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
 
         # Generate the dependency tree:
         node_mgr = NodeManager(
-            datetime.now(),
+            {},
             1000,
             lfl_params,
             required_params,

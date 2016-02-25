@@ -13,13 +13,11 @@ NOTE: Node colours are set within dependency_graph.py
 
 
 import argparse
-import httplib2
+import json
 import logging
 import os
-import simplejson
-import socket
+import requests
 import sys
-import urllib
 import webbrowser
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
@@ -28,18 +26,6 @@ from datetime import date
 from jinja2 import Environment, FileSystemLoader
 from tempfile import mkstemp
 from urlparse import urlparse
-
-
-################################################################################
-# Logging Configuration
-
-
-logging.getLogger('flightdataparametertree').addHandler(logging.NullHandler())
-
-
-################################################################################
-# Imports (#2)
-
 
 from hdfaccess.file import hdf_file
 
@@ -53,6 +39,13 @@ from analysis_engine.node import NodeManager
 from analysis_engine.process_flight import get_derived_nodes
 
 from flightdatautilities.browser import register_additional_browsers
+
+
+################################################################################
+# Globals
+
+
+logging.getLogger('flightdataparametertree')
 
 
 ################################################################################
@@ -103,7 +96,6 @@ if not os.path.isdir(AJAX_DIR):
     print "Making AJAX directory: %s" % AJAX_DIR
     os.makedirs(AJAX_DIR)
 
-socket.setdefaulttimeout(120)
 
 ################################################################################
 # Helpers
@@ -154,19 +146,7 @@ def lookup_path(relative_path):
     '''
     file_path = relative_path.lstrip('/').replace('/', os.sep)
     if getattr(sys, 'frozen', False):
-        # The OLD pyInstaller way
-        # http://www.pyinstaller.org/export/v1.5.1/project/doc/Manual.html?format=raw#accessing-data-files
-        #if '_MEIPASS2' in os.environ:
-        #    # --onefile distribution
-        #    return os.path.join(os.environ['_MEIPASS2'], file_path)
-        #else:
-        #    # --onedir distribution
-        #    return os.path.join(os.path.dirname(sys.executable), file_path)
-
-        # The NEW cx_Freeze way
-        # http://cx_freeze.readthedocs.org/en/latest/overview.html#using-data-files
-        print >>sys.stderr, os.path.join(os.path.dirname(sys.argv[0]), file_path)
-        return os.path.join(os.path.dirname(sys.argv[0]), file_path)
+        return os.path.join(os.path.dirname(sys.executable), file_path)
     else:
         return file_path
 
@@ -365,13 +345,13 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
         # Save the dependency tree to tree.json:
         tree = os.path.join(AJAX_DIR, 'tree.json')
         with open(tree, 'w') as fh:
-            simplejson.dump(graph_adjacencies(gr_st), fh, indent=4)
+            json.dump(graph_adjacencies(gr_st), fh, indent=4)
 
         # Save the list of nodes to node_list.json:
         node_list = os.path.join(AJAX_DIR, 'node_list.json')
         spanning_tree_params = sorted(gr_st.nodes())
         with open(node_list, 'w') as fh:
-            simplejson.dump(spanning_tree_params, fh, indent=4)
+            json.dump(spanning_tree_params, fh, indent=4)
         return
 
     ####################################
@@ -387,11 +367,11 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
         # FIXME: Requires use of lookup_path()?
         key_params = open('data/key_parameters', 'r').read().splitlines()
         param_names = list(set(lfl_params).union(key_params))
-        http = httplib2.Http(disable_ssl_certificate_validation=True)
-        body = urllib.urlencode({'parameters': simplejson.dumps(param_names)})
+        data = {'parameters': json.dumps(param_names)}
         try:
             print >>sys.stderr, 'Fetching parameters from %s' % BASE_URL
-            response, content = http.request(BASE_URL + '/api/parameter', 'POST', body)
+            r = requests.post(BASE_URL + '/api/parameter', data=data)
+            r.raise_for_status()
         except Exception as err:
             print >>sys.stderr, 'Exception raised during API query:', str(err)
             polaris_query = False
@@ -401,7 +381,7 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
             } for param_name in param_names}
         else:
             polaris_query = True
-            params = simplejson.loads(content)['data']
+            params = r.json()['data']
         for param_name, param_info in params.iteritems():
             param_info['key'] = param_name in key_params
             param_info['lfl'] = param_name in lfl_params

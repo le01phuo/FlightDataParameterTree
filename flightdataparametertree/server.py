@@ -367,10 +367,9 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
         # FIXME: Requires use of lookup_path()?
         key_params = open('data/key_parameters', 'r').read().splitlines()
         param_names = list(set(lfl_params).union(key_params))
-        data = {'parameters': json.dumps(param_names)}
         try:
             print >>sys.stderr, 'Fetching parameters from %s' % BASE_URL
-            r = requests.post(BASE_URL + '/api/parameter', data=data)
+            r = requests.get(BASE_URL + '/api/parameter/')
             r.raise_for_status()
         except Exception as err:
             print >>sys.stderr, 'Exception raised during API query:', str(err)

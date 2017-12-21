@@ -60,6 +60,9 @@ pylint.log
 *.log
 *.tmp
 
+# Json files:
+*.json
+
 # Project specific ignores:
 *.lprof
 *.pstats

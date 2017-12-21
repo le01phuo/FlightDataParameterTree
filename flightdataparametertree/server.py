@@ -278,15 +278,36 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
         file_obj.close()
         try:
             with hdf_file(file_path) as hdf_file_obj:
-                lfl_params = hdf_file_obj.keys()
+                #lfl_params = hdf_file_obj.keys()
+                json_dep_tree = json.loads(hdf_file_obj.dependency_tree)
+                from networkx.readwrite import json_graph
+                gr_st = json_graph.node_link_graph(json_dep_tree)
         except IOError:
             self._index(error='Please select a valid HDF file.')
             return
 
         # Fetch parameters to display in a grid:
-        self._generate_json(lfl_params)
-        polaris_query, params, missing_lfl_params = self._fetch_params(lfl_params)
+        #self._generate_json(lfl_params)
+        
+        
+        # Save the dependency tree to tree.json:
+        tree = os.path.join(AJAX_DIR, 'tree.json')
+        with open(tree, 'w') as fh:
+            json.dump(graph_adjacencies(gr_st), fh, indent=4)
 
+        # Save the list of nodes to node_list.json:
+        node_list = os.path.join(AJAX_DIR, 'node_list.json')
+        spanning_tree_params = sorted(gr_st.nodes())
+        with open(node_list, 'w') as fh:
+            json.dump(spanning_tree_params, fh, indent=4)        
+        
+        
+        
+        
+        
+        #polaris_query, params, missing_lfl_params = self._fetch_params(lfl_params)
+        polaris_query, params, missing_lfl_params = '', {}, []
+        
         # Render the spacetree:
         self._respond_with_template('spacetree.html', {
             'missing_lfl_params': missing_lfl_params,
@@ -305,53 +326,53 @@ class SpacetreeRequestHandler(BaseHTTPRequestHandler):
 
         Note: LFL parameters not used will not be returned!
         '''
-        print "Establishing Node dependencies from Analysis Engine"
-        # Ensure file is a valid HDF file before continuing:
-        derived_nodes = get_derived_nodes(settings.NODE_MODULES)
-        required_params = derived_nodes.keys()
+        #print "Establishing Node dependencies from Analysis Engine"
+        ## Ensure file is a valid HDF file before continuing:
+        #derived_nodes = get_derived_nodes(settings.NODE_MODULES)
+        #required_params = derived_nodes.keys()
 
-        # TODO: Update ac_info with keys from provided fields:
-        ac_info = {
-            'Family': u'B737 NG',
-            'Frame': u'737-3C',
-            'Identifier': u'15',
-            'Main Gear To Lowest Point Of Tail': None,
-            'Main Gear To Radio Altimeter Antenna': None,
-            'Manufacturer Serial Number': u'39009',
-            'Manufacturer': u'Boeing',
-            'Model': u'B737-8JP',
-            'Precise Positioning': True,
-            'Series': u'B737-800',
-            'Tail Number': 'G-ABCD',
-        }
+        ## TODO: Update ac_info with keys from provided fields:
+        #ac_info = {
+            #'Family': u'B737 NG',
+            #'Frame': u'737-3C',
+            #'Identifier': u'15',
+            #'Main Gear To Lowest Point Of Tail': None,
+            #'Main Gear To Radio Altimeter Antenna': None,
+            #'Manufacturer Serial Number': u'39009',
+            #'Manufacturer': u'Boeing',
+            #'Model': u'B737-8JP',
+            #'Precise Positioning': True,
+            #'Series': u'B737-800',
+            #'Tail Number': 'G-ABCD',
+        #}
 
-        # TODO: Option to populate an AFR:
-        achieved_flight_record = {}
+        ## TODO: Option to populate an AFR:
+        #achieved_flight_record = {}
 
-        # Generate the dependency tree:
-        node_mgr = NodeManager(
-            {},
-            1000,
-            lfl_params,
-            required_params,
-            [],
-            derived_nodes,
-            ac_info,
-            achieved_flight_record,
-        )
-        _graph = graph_nodes(node_mgr)
-        gr_all, gr_st, order = process_order(_graph, node_mgr)
+        ## Generate the dependency tree:
+        #node_mgr = NodeManager(
+            #{},
+            #1000,
+            #lfl_params,
+            #required_params,
+            #[],
+            #derived_nodes,
+            #ac_info,
+            #achieved_flight_record,
+        #)
+        #_graph = graph_nodes(node_mgr)
+        #gr_all, gr_st, order = process_order(_graph, node_mgr)
 
-        # Save the dependency tree to tree.json:
-        tree = os.path.join(AJAX_DIR, 'tree.json')
-        with open(tree, 'w') as fh:
-            json.dump(graph_adjacencies(gr_st), fh, indent=4)
+        ## Save the dependency tree to tree.json:
+        #tree = os.path.join(AJAX_DIR, 'tree.json')
+        #with open(tree, 'w') as fh:
+            #json.dump(graph_adjacencies(gr_st), fh, indent=4)
 
-        # Save the list of nodes to node_list.json:
-        node_list = os.path.join(AJAX_DIR, 'node_list.json')
-        spanning_tree_params = sorted(gr_st.nodes())
-        with open(node_list, 'w') as fh:
-            json.dump(spanning_tree_params, fh, indent=4)
+        ## Save the list of nodes to node_list.json:
+        #node_list = os.path.join(AJAX_DIR, 'node_list.json')
+        #spanning_tree_params = sorted(gr_st.nodes())
+        #with open(node_list, 'w') as fh:
+            #json.dump(spanning_tree_params, fh, indent=4)
         return
 
     ####################################
